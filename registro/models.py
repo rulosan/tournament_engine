@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 # Create your models here.
 
@@ -19,7 +20,12 @@ class Competidor(models.Model):
     email = models.EmailField(max_length=100)
 
     def __unicode__(self):
-        return "{nombre} {apellido_paterno} {apellido_materno}".format(**self.__dict__)
+        return "{nombre} {apellido_paterno} {apeqllido_materno}".format(**self.__dict__)
+
+    def get_edad(self):
+        tmp_edad = date.today() - self.fecha_nacimiento
+        days = tmp_edad.days / 365
+        return days
 
     class Meta:
         pass
