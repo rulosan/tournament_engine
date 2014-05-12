@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 from rest_framework.urlpatterns import format_suffix_patterns
 from registro import views
@@ -17,9 +18,8 @@ urlpatterns = router.urls
 
 urlpatterns += patterns('',
     url(r'^competidor/(?P<competidor_pk>\d+)/practica', views.PracticaArteMarcialViewSet.as_view({'get': 'detail',
-                                                                                             'post': 'create'})),
-    url(r'^competidor/(?P<competidor_pk>\d+)/entrena', views.EntrenaViewSet.as_view({'get': 'detail',
-                                                                                     'post':'create'})),
+                                                                                                  'post': 'create'})),
+    url(r'^apodo/(?P<apodo>\w+)/available', views.ApodoViewSet.as_view({'get': 'retrieve'})),
 )
 
 

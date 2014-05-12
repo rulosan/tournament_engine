@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from registro import models
+from torneo.models import  Torneo
 from registro import serializers
+from datetime import datetime
 
 """
  def list(self, request):
@@ -33,15 +36,18 @@ from registro import serializers
 
 class CompetidorViewSet (viewsets.ViewSet):
 
+
     def list(self, request, format=None):
         queryset = models.Competidor.objects.all()
         serializer = serializers.CompetidorSerializer(queryset, many=True)
         return Response(serializer.data)
 
+
+
     def retrieve(self, request, pk=None, format=None):
         queryset = models.Competidor.objects.all()
-        competidor = get_object_or_404(queryset,pk=pk)
-        serializer = models.CompetidorSerializer(competidor)
+        competidor = get_object_or_404(queryset, pk=pk)
+        serializer = serializers.CompetidorSerializer(competidor)
         return Response(serializer.data)
 
     def create(self, request, format=None):
@@ -109,11 +115,23 @@ class ArteMarcialViewSet (viewsets.ViewSet):
 class PracticaArteMarcialViewSet(viewsets.ViewSet):
 
     def create (self, request, competidor_pk, format=None):
-        # TODO : probar este metodo para ver como se le agrega el competidor_pk
-        ser = serializers.PracticaArteMarcialSerializer(data=request.DATA)
+        data = request.DATA
+        data['competidor'] = competidor_pk
+        ser = serializers.PracticaArteMarcialSerializer(data=data)
         if ser.is_valid():
-            ser.save()
-            return Response(ser.data, status=status.HTTP_201_CREATED)
+            dd = ser.data
+            lookup = {
+                'academia__id': dd['academia'],
+                'competidor__id': dd['competidor'],
+                'arte_marcial__id': dd['arte_marcial']
+            }
+            count = models.PracticaArteMarcial.objects.filter(**lookup).count()
+            if count == 0:
+                ser.save()
+                return Response(ser.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message': 'Ya tienes esa arte marcial con esa academia'},
+                                status=status.HTTP_403_FORBIDDEN)
         return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def detail(self, request, competidor_pk, format=None):
@@ -122,11 +140,44 @@ class PracticaArteMarcialViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+#################################################################################
+#  Apodos
+#################################################################################
 
-class EntrenaViewSet(viewsets.ViewSet):
+class ApodoViewSet(viewsets.ViewSet):
+    """
+        Sirve para cheacar si ya existe un apodo en el momento
+        que se estan registrando
+    """
+    def retrieve(self, request, apodo, format=None):
+        count = models.Competidor.objects.filter(apodo__exact=apodo).count()
+        if count == 0:
+            return Response({'available': True}, status=status.HTTP_200_OK)
+        return Response({'available': False}, status=status.HTTP_403_FORBIDDEN)
 
-    def create(self, request, competidor_pk, format=None):
+#################################################################################
+#  PArticiopaciones
+#################################################################################
+
+class PreParticipacionViewSet(viewsets.ViewSet):
+    """
+        Cuando el usuario se registra, pero solo
+        puede llenar ciertos datos, ya que los demas
+        datos tiene que ser confirmados por el staff
+    """
+
+    def create(self, request, format=None):
+        serializer = serializers.PreParticipacionSerializer(data=request.DATA)
         pass
 
-    def detail(self, request, competidor_pk, format=None):
+
+
+class PostParticipacionViewSet(viewsets.ViewSet):
+    """
+        TODO: esta vista solo tiene que ser consultada
+        por un usuario administrador o de staff del torneo
+        ya que puede modificar los estados de la participacion
+        si_pago , nivel, peso que son los definitivos
+    """
+    def create(self, request, format=None):
         pass

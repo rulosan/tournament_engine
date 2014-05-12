@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from datetime import date
 
@@ -44,12 +46,8 @@ class PracticaArteMarcial(models.Model):
     arte_marcial = models.ForeignKey(ArteMarcial)
     anhos_experiencia = models.PositiveSmallIntegerField()
     meses_experiencia = models.PositiveSmallIntegerField()
-
-
-class EntrenaAcademia(models.Model):
-    competidor = models.ForeignKey(Competidor)
     academia = models.ForeignKey(Academia)
-    ultima_fecha = models.DateField()
+    actual = models.BooleanField(null=None)
 
 
 class Participacion(models.Model):
@@ -76,8 +74,8 @@ class Participacion(models.Model):
     torneo = models.ForeignKey('torneo.Torneo')
     competidor = models.ForeignKey(Competidor)
     fecha_registro = models.DateTimeField()
-    si_pago = models.BooleanField()
-    peso = models.DecimalField(max_digits=3, decimal_places=3)
     edad = models.IntegerField()
     categoria = models.CharField(max_length=2, choices=CATEGORIAS, default=ADULTO)
     nivel = models.CharField(max_length=2, choices=NIVEL, default=PRINCIPIANTE)
+    si_pago = models.BooleanField()
+    peso = models.DecimalField(max_digits=3, decimal_places=3)

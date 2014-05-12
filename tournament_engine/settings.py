@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Django settings for tournament_engine project.
 
@@ -45,7 +47,8 @@ INSTALLED_APPS = (
     'djangular',
     'registro',
     'torneo',
-    'webui'
+    'webui',
+  #  'south',
 )
 
 MIDDLEWARE_CLASSES = (
