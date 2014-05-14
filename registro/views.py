@@ -169,8 +169,16 @@ class PreParticipacionViewSet(viewsets.ViewSet):
     def create(self, request, format=None):
         serializer = serializers.PreParticipacionSerializer(data=request.DATA)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            data = serializer.data
+            torneo = data['torneo']
+            competidor = data['competidor']
+            count_part = models.Participacion.objects.filter(torneo__id=torneo,
+                                                             competidor__id=competidor).count()
+            if count_part == 0:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Ya existe una participacion en este torneo'},
+                            status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
