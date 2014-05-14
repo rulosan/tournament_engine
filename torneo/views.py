@@ -6,6 +6,8 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from torneo import models
 from torneo import serializers
+from registro.models import Participacion
+from registro.serializers import PostParticipacionSerializer
 
 
 class TorneoViewSet(viewsets.ViewSet):
@@ -40,3 +42,9 @@ class LocacionViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+class TorneoParticipacion (viewsets.ViewSet):
+
+    def detail(self, request, torneo_id, format=None):
+        participaciones = Participacion.objects.filter(torneo__id=torneo_id)
+        serializer = PostParticipacionSerializer(participaciones, many=True)
+        return Response(serializer.data)

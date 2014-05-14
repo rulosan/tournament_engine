@@ -168,7 +168,10 @@ class PreParticipacionViewSet(viewsets.ViewSet):
 
     def create(self, request, format=None):
         serializer = serializers.PreParticipacionSerializer(data=request.DATA)
-        pass
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

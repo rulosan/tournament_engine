@@ -3,6 +3,8 @@ __author__ = 'rulo'
 
 from registro import models
 from rest_framework import serializers
+from django.utils import timezone
+from datetime import datetime
 
 
 class CompetidorSerializer (serializers.ModelSerializer):
@@ -23,6 +25,7 @@ class CompetidorSerializer (serializers.ModelSerializer):
 
 
 class AcademiaSerializer (serializers.ModelSerializer):
+
     class Meta:
         model = models.Academia
         fields = ('id', 'nombre')
@@ -65,9 +68,9 @@ class PreParticipacionSerializer(serializers.ModelSerializer):
         y tienen que ser llenados por el staff del sistema
     """
     def save_object(self, obj, **kwargs):
-        #incluir los campos que se tienen que generar desde el backend
-        # fecha_registro, edad, categoria, si_pago = FAlse
-        print obj
+        edad = obj.competidor.get_edad()
+        obj.edad = edad
+        obj.set_categoria(edad)
         super(PreParticipacionSerializer, self).save_object(obj, **kwargs)
 
     class Meta:
@@ -80,3 +83,15 @@ class PreParticipacionSerializer(serializers.ModelSerializer):
                             'edad',
                             'fecha_registro',
                             'categoria')
+
+class PostParticipacionSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = models.Participacion
+        fields = ('torneo',
+                  'competidor',
+                  'nivel',
+                  'peso',
+                  'si_pago',
+                  'edad',
+                  'fecha_registro',
+                  'categoria')

@@ -13,6 +13,7 @@ router = SimpleRouter()
 router.register(r'academia', views.AcademiaViewSet, base_name='academia')
 router.register(r'competidor', views.CompetidorViewSet, base_name='competidor')
 router.register(r'artemarcial', views.ArteMarcialViewSet, base_name='artemarcial')
+router.register(r'participacion', views.PreParticipacionViewSet, base_name='participacion')
 
 urlpatterns = router.urls
 

@@ -22,7 +22,7 @@ class Competidor(models.Model):
     email = models.EmailField(max_length=100)
 
     def __unicode__(self):
-        return "{nombre} {apellido_paterno} {apeqllido_materno}".format(**self.__dict__)
+        return "{nombre} {apellido_paterno} {apellido_materno}".format(**self.__dict__)
 
     def get_edad(self):
         tmp_edad = date.today() - self.fecha_nacimiento
@@ -73,9 +73,17 @@ class Participacion(models.Model):
 
     torneo = models.ForeignKey('torneo.Torneo')
     competidor = models.ForeignKey(Competidor)
-    fecha_registro = models.DateTimeField()
+    fecha_registro = models.DateTimeField(auto_now=True)
     edad = models.IntegerField()
     categoria = models.CharField(max_length=2, choices=CATEGORIAS, default=ADULTO)
     nivel = models.CharField(max_length=2, choices=NIVEL, default=PRINCIPIANTE)
-    si_pago = models.BooleanField()
-    peso = models.DecimalField(max_digits=3, decimal_places=3)
+    si_pago = models.BooleanField(default=False)
+    peso = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def set_categoria(self, edad):
+        if edad < 17:
+            self.categoria = 'JU'
+        elif edad < 35:
+            self.categoria = 'AD'
+        else:
+            self.categoria = 'SE'
