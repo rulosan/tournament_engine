@@ -1,0 +1,13 @@
+{% extends 'webui/layout.html' %}
+
+{% block content %}
+    {% verbatim %}
+        <div ng-controller="LandingController">
+            <ul>
+                <li ng-repeat="participacion in participaciones">
+                    {{ participacion.nivel }}
+                </li>
+            </ul>
+        </div>
+    {% endverbatim %}
+{% endblock %}

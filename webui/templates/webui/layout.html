@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html ng-app="TournamentEngineApp">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <title>Tournament Engine</title>
+     {% load staticfiles %}
+</head>
+<body>
+     {% block content %} {% endblock %}
+    <script src="{% static 'webui/js/lib/angular_1.2.16.js' %}"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>
+    <script src="{% static 'webui/js/TournamentApp/TournamentApp.js' %}"></script>
+</body>
+</html>
